@@ -16,7 +16,37 @@ const userSchema = new mongoose.Schema({
                 throw new Error('Password cannot contain "Password"')
             }
         }
-    }
+    },
+    userName: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true
+    },
+    profileInfo: {
+        bDay: {
+            type: Number
+        },
+        bMonth: {
+            type: Number
+        },
+        bYear: {
+            type: Number
+        },
+        locationToVisit: {
+            type: String,
+            trim: true
+        },
+        bio: {
+            type: String,
+            trim: true
+        }
+    },
+    matches: [{
+        matchedUser: {
+            type: String
+        }
+    }]
 }, {
     timestamps: true
 })
