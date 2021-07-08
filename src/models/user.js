@@ -34,8 +34,18 @@ const userSchema = new mongoose.Schema({
             type: Number
         },
         locationToVisit: {
-            type: String,
-            trim: true
+            country: {
+                type: String,
+                trim: true
+            },
+            state: {
+                type: String,
+                trim: true
+            },
+            county: {
+                type: String,
+                trim: true
+            }
         },
         bio: {
             type: String,
