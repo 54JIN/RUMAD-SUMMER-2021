@@ -25,31 +25,38 @@ const userSchema = new mongoose.Schema({
     },
     profileInfo: {
         bDay: {
-            type: Number
+            type: Number,
+            default: null
         },
         bMonth: {
-            type: Number
+            type: Number,
+            default: null
         },
         bYear: {
-            type: Number
+            type: Number,
+            default: null
         },
         locationToVisit: {
             country: {
                 type: String,
-                trim: true
+                trim: true,
+                default: null
             },
             state: {
                 type: String,
-                trim: true
+                trim: true,
+                default: null
             },
             county: {
                 type: String,
-                trim: true
+                trim: true,
+                default: null
             }
         },
         bio: {
             type: String,
-            trim: true
+            trim: true,
+            default: null
         }
     },
     matches: [{
