@@ -67,42 +67,31 @@ router.delete('/users', async (req,res) => {
 })
 
 //returns all users with the same country to visit
-router.get('/users/:country',async (req,res)=>{
+router.get('/users/:country', async (req,res) => {
     try{
-        const {country} = req.params;
-        //let result = new Array();
-        //console.log(result);
-        // await User.find({}).select("profileInfo").exec(function(err,user){
-        //     //console.log(user[0].profileInfo.locationToVisit);
-        //     user.forEach((User)=>{
-        //         //console.log(User.profileInfo.locationToVisit.country)
-        //         if(User.profileInfo.locationToVisit.country===country){
-        //             result.push(User);
-        //             //console.log(result);
-        //         }
-        //     })
-        // })
-        //trying a commit on beater
-        const user=await User.find({}).select("profileInfo");
-        let result=new Array();
-        user.forEach(async (Users)=>{
-            if(Users.profileInfo.locationToVisit.country===country){
-                let ok=await User.findByID(Users._id);
-                console.log(Users._id);
-                result.push(ok);
-
-        }})
-
-
-        console.log("final result is");
-        console.log(result);
-        
+        //get all the users with profileInfo
+        const user = await User.find({}).select("profileInfo");
+        //filter through the users with the right country
+        let matchingUsers = user.filter(user => {
+            if(user.profileInfo.locationToVisit.country === req.params.country){
+                return user
+            }
+        })
+        let id = new Array();
+        //storing matched users id in an empty array
+        matchingUsers.forEach(mUser => {
+            id.push(mUser._id);
+        })
+        //using the array of ids to return all properties associated to them
+        const result = await User.find({
+            '_id': { $in: id}
+        })
+        //returning the result
         res.send(result);
-    }catch(e){
+    } catch (e) {
+        //catching any errors
         res.status(500).send(e);
     }
-    
 })
-
 
 module.exports = router;
