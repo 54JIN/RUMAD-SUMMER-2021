@@ -82,7 +82,7 @@ router.get('/users/:country',async (req,res)=>{
         //         }
         //     })
         // })
-        await User.findByID("60f08e8d76ddd474047e82cd");
+        //trying a commit on beater
         const user=await User.find({}).select("profileInfo");
         let result=new Array();
         user.forEach(async (Users)=>{
