@@ -66,4 +66,43 @@ router.delete('/users', async (req,res) => {
     }
 })
 
+//returns all users with the same country to visit
+router.get('/users/:country',async (req,res)=>{
+    try{
+        const {country} = req.params;
+        //let result = new Array();
+        //console.log(result);
+        // await User.find({}).select("profileInfo").exec(function(err,user){
+        //     //console.log(user[0].profileInfo.locationToVisit);
+        //     user.forEach((User)=>{
+        //         //console.log(User.profileInfo.locationToVisit.country)
+        //         if(User.profileInfo.locationToVisit.country===country){
+        //             result.push(User);
+        //             //console.log(result);
+        //         }
+        //     })
+        // })
+        await User.findByID("60f08e8d76ddd474047e82cd");
+        const user=await User.find({}).select("profileInfo");
+        let result=new Array();
+        user.forEach(async (Users)=>{
+            if(Users.profileInfo.locationToVisit.country===country){
+                let ok=await User.findByID(Users._id);
+                console.log(Users._id);
+                result.push(ok);
+
+        }})
+
+
+        console.log("final result is");
+        console.log(result);
+        
+        res.send(result);
+    }catch(e){
+        res.status(500).send(e);
+    }
+    
+})
+
+
 module.exports = router;

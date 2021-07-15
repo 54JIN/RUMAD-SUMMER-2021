@@ -64,7 +64,7 @@ const userSchema = new mongoose.Schema({
         matchedUser: {
             type: String
         }
-    }]
+    }],
 }, {
     timestamps: true
 })
