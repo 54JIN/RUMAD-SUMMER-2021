@@ -12,6 +12,45 @@ router.get('/users', async (req, res) => {
     }
 })
 
+router.get('/users/:id', async (req, res) => {
+    try{
+        //getting the user from collection
+        const user = await User.findById(req.params.id);
+        //setting individual variables
+        const {country, state} = user.profileInfo.locationToVisit;
+        const {bio, bDay, bMonth, bYear} = user.profileInfo;
+        const {userName, name} = user;
+        //calculating age
+        const today = new Date();
+        const birthDate = new Date(bYear, bMonth-1, bDay);
+        //gets the pottential correct age
+        let age = today.getFullYear() - birthDate.getFullYear();
+        //calculates how far off the month is from birthday
+        const m = today.getMonth() - birthDate.getMonth();
+        //checks if the age is to be lower or stay the same
+        //if the current day is less than the birthDay lower age
+        if(m < 0 || (m === 0 && today.getDate() < birthDate.getDate())){
+            age--;
+        }
+        //make an object thats organized
+        const result = {
+            userName,
+            name,
+            bDay,
+            bMonth,
+            bYear,
+            age,
+            country,
+            state,
+            bio,
+        }
+        //return the result
+        res.send(result);
+    } catch (e) {
+        res.status(401).send(e);
+    }
+})
+
 //creates a new user into the user collection and then returns that users data
 router.post('/users', async (req, res) => {
     const user = new User(req.body);

@@ -27,15 +27,18 @@ const userSchema = new mongoose.Schema({
     profileInfo: {
         bDay: {
             type: Number,
-            default: null
+            default: null,
+            required: true
         },
         bMonth: {
             type: Number,
-            default: null
+            default: null,
+            required: true
         },
         bYear: {
             type: Number,
-            default: null
+            default: null,
+            required: true
         },
         locationToVisit: {
             country: {
