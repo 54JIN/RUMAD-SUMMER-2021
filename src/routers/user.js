@@ -132,6 +132,7 @@ router.get('/users/:id', async (req, res) => {
     }
 })
 
+//incomplete
 //returns all the bookmarked users
 router.get('/users/bookmarked/:id', async (req,res) => {
     try{
@@ -141,8 +142,37 @@ router.get('/users/bookmarked/:id', async (req,res) => {
             1.) gain access to the users matched ids of other users
             2.) return the matched users first and last name, age, location to visit, and image if any already integrated.
         */
+       
+        res.send(user.bookmarks);
+        //incomplete
+        //still need to populate the IDs into actual user 
+        //for now only see IDs to debug
+        
         
     } catch (e) {
+        res.status(401).send(e);
+    }
+})
+
+//bookmark a user from another user
+//Ex: A user wants to bookmark B, B's ID will be saved in A's matched data
+//return: userA's book marks
+router.get('/users/bookmark/:fromID/:toID', async( req,res )=>{
+    try{
+        //save all users info into variables
+        let { fromID,toID }=req.params;
+        let userA=await User.findById(fromID);
+        let userB=await User.findById(toID);
+
+        //save the ID being bookmarked into the main user's database
+        userA.bookmarks.unshift(userB._id);
+        await userA.save();
+        console.log(`${userA.userName} bookmarked ${userB.userName}`);
+
+        //return UserA's bookmarks
+        res.send(userA.bookmarks);
+        
+    } catch (e){
         res.status(401).send(e);
     }
 })
