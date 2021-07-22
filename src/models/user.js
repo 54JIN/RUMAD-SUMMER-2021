@@ -68,6 +68,11 @@ const userSchema = new mongoose.Schema({
             type: String
         }
     }],
+    bookmarks: [{
+        markedUser: {
+            type: String
+        }
+    }]
 }, {
     timestamps: true
 })
