@@ -1,6 +1,10 @@
 const express = require('express');
 const router = new express.Router();
 const User = require('../models/user');
+const bcrypt = require("bcrypt");
+
+//salt round for hasing passwords
+const SALT_ROUNDS = 8;
 
 //returns all users within the user collection of mongoose
 router.get('/users', async (req, res) => {
@@ -176,5 +180,71 @@ router.get('/users/bookmark/:fromID/:toID', async( req,res )=>{
         res.status(401).send(e);
     }
 })
+
+//we gotta save hashed password into the user when we are first creating the user, so gotta redo everything here
+async function auth(userId,password){
+    
+    //find the user and if not return false
+    const user = await User.findById(userId);
+    if(!user){
+        return false;
+    }
+
+    //compare hash passwords, if incorrect return false
+    const originalPasswordHashed = await bcrypt.hash(user.password, SALT_ROUNDS);
+    //const match = await bcrypt.compare(password, originalPasswordHashed);
+   
+    const sampleMatch = password === user.password;
+    if(!sampleMatch){
+        return false;
+    }
+
+    //return user if it's matching
+    return user;
+}
+
+//the middleware is not tested yet
+async function authMiddleware(req,res,next){
+    //get the login info needed from body
+    const {userId, password} = req.body;
+    
+    //call the auth function to either get the user or return false
+    const user= await auth(userId,password);
+    if(!user){
+        res.status(401).send({
+            error: "Incorrect Info !"
+        })
+        return
+    }
+
+    req.user=user;
+    next();
+
+}
+
+//route for testing login
+app.post('./login/:userID/:password' ,(req,res)=>{
+    try {
+            //grab login info
+            const {userId,password} = req.param;
+            
+            //either find the info or no
+            const user=auth(userId,password);
+            if(!user){
+                res.status(401).send({
+                    error:"login failed"
+                });
+            }
+
+            res.status(200).send(user);
+        } catch (e){
+        
+            res.send({
+                error:"something went wrong"
+            });
+    }
+    
+});
+
 
 module.exports = router;
